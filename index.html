@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAMPELKU - Sistem Monitoring Lab Klinik & Kustomisasi Profil</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#F0F7FF',
+                            100: '#E0F0FE',
+                            500: '#0284C7',
+                            600: '#0369A1',
+                            700: '#075985',
+                            900: '#0C4A6E',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #EEF6FC 0%, #F6FAFE 100%);
+            min-height: 100vh;
+        }
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(224, 242, 254, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #93C5FD;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3B82F6;
+        }
+        /* Printable area styles for stickers */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printableSticker, #printableSticker * {
+                visibility: visible;
+            }
+            #printableSticker {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-sky-200">
+
+    <div id="app" class="flex flex-col lg:flex-row min-h-screen">
+        <!-- ================= SIDEBAR ================= -->
+        <aside class="w-full lg:w-72 bg-white/90 backdrop-blur-md border-r border-sky-100 flex flex-col justify-between shrink-0 shadow-sm z-20">
+            <div>
+                <!-- LOGO BRANDING AREA (CLICKABLE TRIGGER FOR LOGO MODAL) -->
+                <div class="p-5 border-b border-sky-100">
+                    <button onclick="openCustomizationModal('logo')" title="Klik untuk Ganti Logo & Branding Lab" class="w-full text-left group flex items-center gap-3 p-2.5 rounded-2xl transition-all duration-200 hover:bg-sky-50/80 border border-transparent hover:border-sky-200 relative overflow-hidden">
+                        <div class="relative shrink-0 flex items-center justify-center">
+                            <!-- Logo Render Container -->
+                            <div id="sidebarLogoContainer" class="flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+                                <!-- Rendered dynamically via JS -->
+                            </div>
+                            <span class="absolute -bottom-1 -right-1 bg-sky-600 text-white text-[9px] font-semibold px-1.5 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-sm">
+                                🎨 Ganti
+                            </span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-1.5">
+                                <h1 id="sidebarAppName" class="font-extrabold text-lg text-slate-800 tracking-tight truncate group-hover:text-sky-600 transition-colors">
+                                    SAMPELKU
+                                </h1>
+                                <span class="bg-sky-100 text-sky-700 text-[10px] font-bold px-1.5 py-0.5 rounded-md">LAB</span>
+                            </div>
+                            <p class="text-xs text-slate-500 font-medium truncate flex items-center gap-1">
+                                <span>Kustomisasi Logo</span>
+                                <svg class="w-3 h-3 text-sky-500 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                            </p>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- NAVIGATION MENU -->
+                <nav class="p-4 space-y-1.5">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all text-sky-700 bg-sky-50 shadow-sm border border-sky-100">
+                        <svg class="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                        <span>Dashboard</span>
+                    </button>
+
+                    <button onclick="switchTab('input')" id="nav-input" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-600 hover:bg-sky-50/70 hover:text-sky-700 transition-all">
+                        <svg class="w-5 h-5 text-slate-400 group-hover:text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Input Sampel Baru</span>
+                    </button>
+
+                    <button onclick="switchTab('kanban')" id="nav-kanban" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-600 hover:bg-sky-50/70 hover:text-sky-700 transition-all">
+                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/></svg>
+                        <span>Ubah Status</span>
+                    </button>
+
+                    <button onclick="switchTab('laporan')" id="nav-laporan" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-600 hover:bg-sky-50/70 hover:text-sky-700 transition-all">
+                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        <span>Laporan & Ekspor</span>
+                    </button>
+
+                    <button onclick="switchTab('pengaturan')" id="nav-pengaturan" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-600 hover:bg-sky-50/70 hover:text-sky-700 transition-all">
+                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        <span>Pengaturan & Kustomisasi</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- SIDEBAR FOOTER: MICROSCOPE ILLUSTRATION -->
+            <div class="p-4 m-4 bg-gradient-to-br from-sky-500 to-brand-700 text-white rounded-2xl shadow-md relative overflow-hidden group">
+                <div class="absolute -right-3 -bottom-3 text-sky-400/20 group-hover:scale-110 transition-transform duration-500">
+                    <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 19a1 1 0 01-1 1H6a1 1 0 010-2h12a1 1 0 011 1zm-7-4a4 4 0 004-4v-1h-1a1 1 0 010-2h1V7a5 5 0 00-10 0v1h1a1 1 0 010 2H7v1a4 4 0 004 4zm-1-6h2v3h-2V9z"/>
+                    </svg>
+                </div>
+                <div class="relative z-10">
+                    <div class="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center mb-2">
+                        🔬
+                    </div>
+                    <p class="text-xs font-semibold text-sky-100 uppercase tracking-wider mb-1">SAMPELKU CLINICAL</p>
+                    <p class="text-xs font-medium text-white/90 leading-relaxed">
+                        Layanan Lab Lebih Terintegrasi untuk Anda 💙
+                    </p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ================= MAIN CONTENT ================= -->
+        <main class="flex-1 flex flex-col min-w-0">
+            <!-- TOP GLASSMORPHISM HEADER BAR -->
+            <header class="bg-white/80 backdrop-blur-md border-b border-sky-100 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 z-10 shadow-sm">
+                <div>
+                    <h2 id="pageTitle" class="text-xl font-bold text-slate-800 tracking-tight">Dashboard Monitoring Sampel</h2>
+                    <!-- WITA Live Clock -->
+                    <div class="flex items-center gap-2 text-xs font-medium text-slate-500 mt-0.5">
+                        <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span id="witaClockDisplay">Waktu Sistem...</span>
+                    </div>
+                </div>
+
+                <!-- OFFICER PROFILE HEADER TRIGGER (CLICKABLE TRIGGER FOR PROFILE MODAL) -->
+                <div class="flex items-center gap-3">
+                    <button onclick="openCustomizationModal('profil')" title="Klik untuk Edit Profil Petugas Lab" class="group flex items-center gap-3 p-1.5 pr-4 rounded-full bg-sky-50/80 hover:bg-sky-100/80 border border-sky-100 transition-all duration-200 text-left relative">
+                        <!-- Profile Photo / Avatar Render Container -->
+                        <div id="headerProfileAvatar" class="relative shrink-0">
+                            <!-- Rendered dynamically via JS -->
+                        </div>
+
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-1.5">
+                                <span id="headerOfficerName" class="text-sm font-bold text-slate-800 group-hover:text-sky-700 transition-colors truncate max-w-[150px] sm:max-w-[200px]">
+                                    Petugas Lab
+                                </span>
+                                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200 hidden sm:inline-block">
+                                    Aktif
+                                </span>
+                            </div>
+                            <p id="headerOfficerSub" class="text-[11px] text-slate-500 truncate max-w-[160px] sm:max-w-[220px]">
+                                Semangat memberikan pelayanan terbaik ✨
+                            </p>
+                        </div>
+
+                        <!-- Hover badge indicator -->
+                        <span class="bg-sky-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-xs ml-1 hidden md:inline-block">
+                            Edit ✏️
+                        </span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- MAIN VIEW CONTAINER -->
+            <div class="p-4 sm:p-6 lg:p-8 flex-1 overflow-y-auto">
+
+                <!-- ---------------- VIEW 1: DASHBOARD ---------------- -->
+                <div id="view-dashboard" class="space-y-6">
+                    <!-- TOP SUMMARY CARDS (4 STAT CARDS) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- 1. Dalam Antrean -->
+                        <div class="bg-white rounded-2xl p-5 border border-amber-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-2 h-full bg-amber-400"></div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-xs font-bold text-amber-700 uppercase tracking-wider bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">Dalam Antrean</span>
+                                <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold">⏳</div>
+                            </div>
+                            <div id="statAntreanCount" class="text-3xl font-black text-slate-800">0</div>
+                            <p class="text-xs text-slate-500 mt-1">Sampel menunggu diproses</p>
+                        </div>
+
+                        <!-- 2. Proses Pengerjaan -->
+                        <div class="bg-white rounded-2xl p-5 border border-sky-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-2 h-full bg-sky-500"></div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-xs font-bold text-sky-700 uppercase tracking-wider bg-sky-50 px-2.5 py-1 rounded-lg border border-sky-200">Proses Pengerjaan</span>
+                                <div class="w-9 h-9 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center font-bold">🔬</div>
+                            </div>
+                            <div id="statProsesCount" class="text-3xl font-black text-slate-800">0</div>
+                            <p class="text-xs text-slate-500 mt-1">Dalam pengujian analis</p>
+                        </div>
+
+                        <!-- 3. Selesai -->
+                        <div class="bg-white rounded-2xl p-5 border border-emerald-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-2 h-full bg-emerald-500"></div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">Selesai</span>
+                                <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">✅</div>
+                            </div>
+                            <div id="statSelesaiCount" class="text-3xl font-black text-slate-800">0</div>
+                            <p class="text-xs text-slate-500 mt-1">Hasil terverifikasi lengkap</p>
+                        </div>
+
+                        <!-- 4. Sampel Selesai Terbaru -->
+                        <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-bold text-slate-600 uppercase tracking-wider">Terbaru Selesai</span>
+                                <button onclick="setFilterStatus('Selesai')" class="text-xs font-semibold text-sky-600 hover:text-sky-800 flex items-center gap-1">
+                                    Lihat Semua &rarr;
+                                </button>
+                            </div>
+                            <div id="latestCompletedContainer" class="space-y-1.5">
+                                <!-- Rendered dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SEARCH & FILTER BAR -->
+                    <div class="bg-white p-4 rounded-2xl border border-sky-100 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
+                        <div class="relative w-full md:w-96">
+                            <input type="text" id="searchInput" oninput="renderTable()" placeholder="Cari Pasien, Kode (SMP-001), atau Pemeriksaan..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-100">
+                            <svg class="w-5 h-5 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                            <!-- Filter Status -->
+                            <select id="statusFilter" onchange="renderTable()" class="px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 bg-slate-50 focus:outline-none focus:border-sky-500">
+                                <option value="Semua">Semua Status (Semua)</option>
+                                <option value="Dalam Antrean">Status: Dalam Antrean</option>
+                                <option value="Proses Pengerjaan">Status: Proses Pengerjaan</option>
+                                <option value="Selesai">Status: Selesai</option>
+                            </select>
+
+                            <!-- Filter Jenis Sampel -->
+                            <select id="jenisFilter" onchange="renderTable()" class="px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 bg-slate-50 focus:outline-none focus:border-sky-500">
+                                <option value="Semua">Semua Jenis Sampel</option>
+                                <option value="Darah">Darah</option>
+                                <option value="Urine">Urine</option>
+                                <option value="Tinja">Tinja</option>
+                                <option value="Sputum">Sputum</option>
+                            </select>
+
+                            <button onclick="switchTab('input')" class="bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm hover:shadow transition-all flex items-center gap-1.5 ml-auto">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                Tambah Sampel
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- PATIENT GROUPED TABLE CONTAINER -->
+                    <div class="bg-white rounded-2xl border border-sky-100 shadow-sm overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm border-collapse">
+                                <thead class="bg-sky-50/70 border-b border-sky-100 text-slate-600 font-bold text-xs uppercase tracking-wider">
+                                    <tr>
+                                        <th class="py-3.5 px-4 text-center w-12">No.</th>
+                                        <th class="py-3.5 px-4">Nama Pasien</th>
+                                        <th class="py-3.5 px-4">Kode Sampel</th>
+                                        <th class="py-3.5 px-4">Jenis Pemeriksaan</th>
+                                        <th class="py-3.5 px-4">Jenis Sampel</th>
+                                        <th class="py-3.5 px-4 text-center">Status Pengerjaan</th>
+                                        <th class="py-3.5 px-4">Waktu Terima</th>
+                                        <th class="py-3.5 px-4">Waktu Selesai</th>
+                                        <th class="py-3.5 px-4 text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sampleTableBody" class="divide-y divide-slate-100">
+                                    <!-- Rendered dynamically with rowspan for patient grouping -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ---------------- VIEW 2: INPUT SAMPEL ---------------- -->
+                <div id="view-input" class="hidden max-w-3xl mx-auto space-y-6">
+                    <div class="bg-white rounded-2xl border border-sky-100 p-6 sm:p-8 shadow-sm">
+                        <div class="flex items-center gap-3 border-b border-sky-100 pb-4 mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center font-bold text-xl">🧪</div>
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-800">Form Input Sampel Lab Baru</h3>
+                                <p class="text-xs text-slate-500">Masukkan data sampel pasien dengan akurat untuk pelacakan laboratorium</p>
+                            </div>
+                        </div>
+
+                        <form id="addSampleForm" onsubmit="handleFormSubmit(event)" class="space-y-5">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nama Pasien <span class="text-rose-500">*</span></label>
+                                <input type="text" id="formNamaPasien" required list="patientSuggestions" placeholder="Contoh: Suminah Karsih / Pasien Baru" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-100">
+                                <datalist id="patientSuggestions">
+                                    <!-- Auto-filled dynamically -->
+                                </datalist>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Jenis Sampel <span class="text-rose-500">*</span></label>
+                                    <select id="formJenisSampel" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-sky-500 bg-white">
+                                        <option value="Darah">Darah</option>
+                                        <option value="Urine">Urine</option>
+                                        <option value="Tinja">Tinja</option>
+                                        <option value="Sputum">Sputum</option>
+                                        <option value="Swab Nasofaring">Swab Nasofaring</option>
+                                        <option value="Cairan Tubuh">Cairan Tubuh</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Status Awal</label>
+                                    <select id="formStatus" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-sky-500 bg-white">
+                                        <option value="Dalam Antrean">Dalam Antrean</option>
+                                        <option value="Proses Pengerjaan">Proses Pengerjaan</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Jenis Pemeriksaan <span class="text-rose-500">*</span></label>
+                                <input type="text" id="formJenisPemeriksaan" required placeholder="Contoh: Hematologi Lengkap, Glukosa, Profil Lipid" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-100">
+                                
+                                <!-- Quick chips -->
+                                <div class="flex flex-wrap gap-1.5 mt-2">
+                                    <span class="text-[11px] font-semibold text-slate-400 self-center">Cepat pilih:</span>
+                                    <button type="button" onclick="setQuickExam('Hematologi Lengkap', 'Darah')" class="text-xs bg-sky-50 hover:bg-sky-100 text-sky-700 px-2.5 py-1 rounded-lg border border-sky-200">Hematologi Lengkap</button>
+                                    <button type="button" onclick="setQuickExam('Glukosa Sewaktu', 'Darah')" class="text-xs bg-sky-50 hover:bg-sky-100 text-sky-700 px-2.5 py-1 rounded-lg border border-sky-200">Glukosa</button>
+                                    <button type="button" onclick="setQuickExam('Urine Lengkap', 'Urine')" class="text-xs bg-sky-50 hover:bg-sky-100 text-sky-700 px-2.5 py-1 rounded-lg border border-sky-200">Urine Lengkap</button>
+                                    <button type="button" onclick="setQuickExam('SGOT / SGPT', 'Darah')" class="text-xs bg-sky-50 hover:bg-sky-100 text-sky-700 px-2.5 py-1 rounded-lg border border-sky-200">SGOT/SGPT</button>
+                                    <button type="button" onclick="setQuickExam('Tinja Lengkap', 'Tinja')" class="text-xs bg-sky-50 hover:bg-sky-100 text-sky-700 px-2.5 py-1 rounded-lg border border-sky-200">Tinja Lengkap</button>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
+                                <button type="button" onclick="switchTab('dashboard')" class="px-5 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">
+                                    Batal
+                                </button>
+                                <button type="submit" class="px-6 py-2.5 bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold rounded-xl shadow-sm hover:shadow transition-all flex items-center gap-2">
+                                    💾 Simpan Sampel Baru
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ---------------- VIEW 3: KANBAN UBAH STATUS ---------------- -->
+                <div id="view-kanban" class="hidden space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800">Papan Alur Status Pengerjaan (Kanban)</h3>
+                            <p class="text-xs text-slate-500">Pindahkan sampel sesuai perkembangan proses analisis di laboratorium</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Column 1: Dalam Antrean -->
+                        <div class="bg-amber-50/50 rounded-2xl border border-amber-200/60 p-4 flex flex-col h-full min-h-[500px]">
+                            <div class="flex items-center justify-between pb-3 mb-3 border-b border-amber-200/80">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                                    <h4 class="font-bold text-sm text-amber-900">Dalam Antrean</h4>
+                                </div>
+                                <span id="kanbanCountAntrean" class="bg-amber-200/70 text-amber-900 font-extrabold text-xs px-2.5 py-0.5 rounded-full">0</span>
+                            </div>
+                            <div id="kanbanColAntrean" class="space-y-3 flex-1 overflow-y-auto">
+                                <!-- Cards -->
+                            </div>
+                        </div>
+
+                        <!-- Column 2: Proses Pengerjaan -->
+                        <div class="bg-sky-50/50 rounded-2xl border border-sky-200/60 p-4 flex flex-col h-full min-h-[500px]">
+                            <div class="flex items-center justify-between pb-3 mb-3 border-b border-sky-200/80">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-sky-500 animate-ping"></span>
+                                    <h4 class="font-bold text-sm text-sky-900">Proses Pengerjaan</h4>
+                                </div>
+                                <span id="kanbanCountProses" class="bg-sky-200/70 text-sky-900 font-extrabold text-xs px-2.5 py-0.5 rounded-full">0</span>
+                            </div>
+                            <div id="kanbanColProses" class="space-y-3 flex-1 overflow-y-auto">
+                                <!-- Cards -->
+                            </div>
+                        </div>
+
+                        <!-- Column 3: Selesai -->
+                        <div class="bg-emerald-50/50 rounded-2xl border border-emerald-200/60 p-4 flex flex-col h-full min-h-[500px]">
+                            <div class="flex items-center justify-between pb-3 mb-3 border-b border-emerald-200/80">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                                    <h4 class="font-bold text-sm text-emerald-900">Selesai</h4>
+                                </div>
+                                <span id="kanbanCountSelesai" class="bg-emerald-200/70 text-emerald-900 font-extrabold text-xs px-2.5 py-0.5 rounded-full">0</span>
+                            </div>
+                            <div id="kanbanColSelesai" class="space-y-3 flex-1 overflow-y-auto">
+                                <!-- Cards -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ---------------- VIEW 4: LAPORAN & EKSPOR ---------------- -->
+                <div id="view-laporan" class="hidden space-y-6">
+                    <div class="bg-white rounded-2xl border border-sky-100 p-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800">Laporan Rekapitulasi Lab</h3>
+                            <p class="text-xs text-slate-500">Ekspor seluruh data sampel laboratorium ke format file CSV untuk Excel</p>
+                        </div>
+                        <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-3 rounded-xl shadow transition-all flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            Unduh Laporan CSV (.csv)
+                        </button>
+                    </div>
+
+                    <!-- Summary KPI Box -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                            <span class="text-xs font-bold text-slate-400 uppercase">Total Sampel Masuk</span>
+                            <div id="reportTotalSamples" class="text-3xl font-black text-slate-800 mt-1">0</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                            <span class="text-xs font-bold text-slate-400 uppercase">Persentase Penyelesaian</span>
+                            <div id="reportCompletionRate" class="text-3xl font-black text-sky-600 mt-1">0%</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                            <span class="text-xs font-bold text-slate-400 uppercase">Estimasi Rata-rata</span>
+                            <div class="text-3xl font-black text-slate-800 mt-1">~45 Min</div>
+                        </div>
+                    </div>
+
+                    <!-- Complete Table -->
+                    <div class="bg-white rounded-2xl border border-sky-100 shadow-sm overflow-hidden p-4">
+                        <h4 class="font-bold text-sm text-slate-800 mb-3">Tabel Riwayat Lengkap</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs text-left">
+                                <thead class="bg-slate-50 text-slate-600 font-bold uppercase border-b border-slate-100">
+                                    <tr>
+                                        <th class="p-3">Kode</th>
+                                        <th class="p-3">Pasien</th>
+                                        <th class="p-3">Pemeriksaan</th>
+                                        <th class="p-3">Jenis</th>
+                                        <th class="p-3">Status</th>
+                                        <th class="p-3">Terima</th>
+                                        <th class="p-3">Selesai</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reportTableBody" class="divide-y divide-slate-100">
+                                    <!-- Dynamic -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ---------------- VIEW 5: PENGATURAN & CUSTOMIZATION ---------------- -->
+                <div id="view-pengaturan" class="hidden space-y-8 max-w-4xl mx-auto">
+                    <!-- Intro Header -->
+                    <div class="bg-white rounded-2xl border border-sky-100 p-6 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-800">Pengaturan Sistem & Kustomisasi Branding</h3>
+                        <p class="text-xs text-slate-500">Sesuaikan logo instansi laboratorium dan profil petugas analis sesuai kebutuhan Anda</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Embedded Logo Customization Card -->
+                        <div class="bg-white rounded-2xl border border-sky-100 p-6 shadow-sm space-y-5">
+                            <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                                <div class="w-8 h-8 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center font-bold">🎨</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-sm">Kustomisasi Logo Lab</h4>
+                                    <p class="text-[11px] text-slate-500">Logo sidebar & identitas instansi</p>
+                                </div>
+                            </div>
+
+                            <button onclick="openCustomizationModal('logo')" class="w-full py-3 bg-sky-50 hover:bg-sky-100 text-sky-700 font-bold text-xs rounded-xl border border-sky-200 transition-colors flex items-center justify-center gap-2">
+                                <span>🎨 Buka Panel Ganti Logo</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                            </button>
+                        </div>
+
+                        <!-- Embedded Profile Customization Card -->
+                        <div class="bg-white rounded-2xl border border-sky-100 p-6 shadow-sm space-y-5">
+                            <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">👤</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-sm">Kustomisasi Profil Petugas</h4>
+                                    <p class="text-[11px] text-slate-500">Nama, status shift & foto profil header</p>
+                                </div>
+                            </div>
+
+                            <button onclick="openCustomizationModal('profil')" class="w-full py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs rounded-xl border border-emerald-200 transition-colors flex items-center justify-center gap-2">
+                                <span>✏️ Buka Panel Edit Profil</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Reset Demo Data Card -->
+                    <div class="bg-white rounded-2xl border border-rose-100 p-6 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="font-bold text-rose-800 text-sm">Reset Data Demo SAMPELKU</h4>
+                                <p class="text-xs text-slate-500">Mengembalikan 5 kelompok sampel pasien awal & 10 data pengujian bawaan</p>
+                            </div>
+                            <button onclick="resetDemoData()" class="px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl border border-rose-200 transition-colors flex items-center gap-2">
+                                🔄 Reset Data Sampel Demo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- ================= MODAL 1: PENGATURAN LOGO & PROFIL ================= -->
+    <div id="customizationModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-xl w-full shadow-2xl overflow-hidden border border-sky-100 flex flex-col max-h-[90vh]">
+            <!-- Modal Header with Tabs -->
+            <div class="bg-gradient-to-r from-sky-600 to-brand-700 text-white p-5 flex items-center justify-between shrink-0">
+                <div>
+                    <h3 class="font-extrabold text-lg tracking-tight">Pengaturan Logo & Profil</h3>
+                    <p class="text-xs text-sky-100 mt-0.5">Kustomisasi visual instansi & data diri petugas lab</p>
+                </div>
+                <button onclick="closeCustomizationModal()" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="flex border-b border-slate-100 bg-slate-50/80 px-5 pt-3 gap-2">
+                <button id="modalTabBtnLogo" onclick="switchModalTab('logo')" class="px-4 py-2.5 font-bold text-xs rounded-t-xl transition-all border-b-2 border-sky-600 text-sky-700 bg-white">
+                    🎨 Logo Lab
+                </button>
+                <button id="modalTabBtnProfil" onclick="switchModalTab('profil')" class="px-4 py-2.5 font-semibold text-xs rounded-t-xl transition-all border-b-2 border-transparent text-slate-500 hover:text-slate-800">
+                    👤 Profil Petugas
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto space-y-6 flex-1">
+
+                <!-- MODAL TAB CONTENT: LOGO -->
+                <div id="modalTabContentLogo" class="space-y-6">
+                    <!-- Live Logo Preview Box -->
+                    <div class="p-4 rounded-2xl border border-sky-100 bg-sky-50/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div id="logoPreviewContainer" class="p-3 bg-white rounded-xl shadow-xs border border-sky-100 flex items-center justify-center min-w-[70px] min-h-[70px]">
+                                <!-- Live Logo Preview -->
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-extrabold tracking-wider text-sky-600 uppercase bg-sky-100 px-2 py-0.5 rounded-md">Live Preview Sidebar</span>
+                                <h4 id="logoPreviewName" class="font-black text-slate-800 text-lg mt-0.5">SAMPELKU</h4>
+                                <p class="text-xs text-slate-500">Pratinjau tampilan logo di bagian atas navigasi</p>
+                            </div>
+                        </div>
+                        <button type="button" onclick="resetToDefaultLogo()" class="text-xs font-bold text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-3 py-2 rounded-xl border border-rose-200 transition-colors">
+                            🔄 Reset ke Logo Default
+                        </button>
+                    </div>
+
+                    <!-- Preset Logo Options (4 Built-in SVG Medical Logos) -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Pilih Logo bawaan (Preset Medical SVGs)</label>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <!-- Preset 1: Default Erlenmeyer & Tube QR -->
+                            <button type="button" onclick="selectPresetLogo('preset1')" class="preset-logo-card p-3 rounded-2xl border-2 border-slate-200 hover:border-sky-500 flex flex-col items-center gap-2 bg-white transition-all text-center">
+                                <div class="w-10 h-10 flex items-center justify-center">
+                                    <svg class="w-9 h-9 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L5.605 15.13a1 1 0 00-1.16.576l-1.4 3.5a1 1 0 00.928 1.37h16.054a1 1 0 00.928-1.37l-1.527-3.778zM12 3v9 shadow"/></svg>
+                                </div>
+                                <span class="text-[11px] font-bold text-slate-700">Labu & QR (Default)</span>
+                            </button>
+
+                            <!-- Preset 2: Mikroskop Lab -->
+                            <button type="button" onclick="selectPresetLogo('preset2')" class="preset-logo-card p-3 rounded-2xl border-2 border-slate-200 hover:border-sky-500 flex flex-col items-center gap-2 bg-white transition-all text-center">
+                                <div class="w-10 h-10 flex items-center justify-center">
+                                    <svg class="w-9 h-9 text-emerald-600" fill="currentColor" viewBox="0 0 24 24"><path d="M19 19a1 1 0 01-1 1H6a1 1 0 010-2h12a1 1 0 011 1zm-7-4a4 4 0 004-4v-1h-1a1 1 0 010-2h1V7a5 5 0 00-10 0v1h1a1 1 0 010 2H7v1a4 4 0 004 4zm-1-6h2v3h-2V9z"/></svg>
+                                </div>
+                                <span class="text-[11px] font-bold text-slate-700">Mikroskop Klinis</span>
+                            </button>
+
+                            <!-- Preset 3: Tabung Darah -->
+                            <button type="button" onclick="selectPresetLogo('preset3')" class="preset-logo-card p-3 rounded-2xl border-2 border-slate-200 hover:border-sky-500 flex flex-col items-center gap-2 bg-white transition-all text-center">
+                                <div class="w-10 h-10 flex items-center justify-center">
+                                    <svg class="w-9 h-9 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L5.605 15.13a1 1 0 00-1.16.576l-1.4 3.5a1 1 0 00.928 1.37h16.054a1 1 0 00.928-1.37l-1.527-3.778z"/></svg>
+                                </div>
+                                <span class="text-[11px] font-bold text-slate-700">Tabung Darah</span>
+                            </button>
+
+                            <!-- Preset 4: Palang Medis Modern -->
+                            <button type="button" onclick="selectPresetLogo('preset4')" class="preset-logo-card p-3 rounded-2xl border-2 border-slate-200 hover:border-sky-500 flex flex-col items-center gap-2 bg-white transition-all text-center">
+                                <div class="w-10 h-10 flex items-center justify-center">
+                                    <svg class="w-9 h-9 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                                </div>
+                                <span class="text-[11px] font-bold text-slate-700">Palang Medis</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Custom Logo Upload Area -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Unggah Gambar Logo Sendiri (PNG, SVG, JPG, WebP)</label>
+                        <div class="border-2 border-dashed border-sky-200 hover:border-sky-400 bg-sky-50/30 rounded-2xl p-4 text-center transition-all cursor-pointer relative">
+                            <input type="file" id="logoFileInput" accept="image/*" onchange="handleLogoFileUpload(event)" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                            <div class="flex flex-col items-center gap-1 pointer-events-none">
+                                <span class="text-2xl">📤</span>
+                                <p class="text-xs font-bold text-sky-700">Klik atau seret file gambar logo di sini</p>
+                                <p class="text-[11px] text-slate-400">Otomatis dioptimalkan & di-resize agar tersimpan lancar di browser</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Logo Scale Selector -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Ukuran Skala Tampilan Logo</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 text-xs font-semibold">
+                                <input type="radio" name="logoScale" value="sedang" onchange="updateLogoScale('sedang')" class="text-sky-600">
+                                Sedang
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 text-xs font-semibold">
+                                <input type="radio" name="logoScale" value="besar" onchange="updateLogoScale('besar')" checked class="text-sky-600">
+                                Besar (Bawaan)
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 text-xs font-semibold">
+                                <input type="radio" name="logoScale" value="ekstra" onchange="updateLogoScale('ekstra')" class="text-sky-600">
+                                Ekstra Besar
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODAL TAB CONTENT: PROFIL PETUGAS -->
+                <div id="modalTabContentProfil" class="hidden space-y-6">
+                    <!-- Live Header Profile Preview -->
+                    <div class="p-4 rounded-2xl border border-emerald-100 bg-emerald-50/40 flex items-center gap-4">
+                        <div id="profilePreviewAvatar" class="relative shrink-0">
+                            <!-- Live Avatar Preview -->
+                        </div>
+                        <div class="min-w-0">
+                            <span class="text-[10px] font-extrabold tracking-wider text-emerald-700 uppercase bg-emerald-100 px-2 py-0.5 rounded-md">Live Preview Top Header</span>
+                            <h4 id="profilePreviewName" class="font-extrabold text-slate-800 text-base mt-0.5 truncate">Petugas Lab</h4>
+                            <p id="profilePreviewSub" class="text-xs text-slate-500 truncate">Semangat memberikan pelayanan terbaik ✨</p>
+                        </div>
+                    </div>
+
+                    <!-- Avatar Preset Options -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Pilih Avatar / Foto Profil Bawaan</label>
+                        <div class="grid grid-cols-4 gap-3">
+                            <button type="button" onclick="selectAvatarPreset('male')" class="preset-avatar-card p-3 rounded-2xl border-2 border-slate-200 hover:border-emerald-500 flex flex-col items-center gap-1.5 bg-white transition-all">
+                                <span class="text-2xl">👨‍🔬</span>
+                                <span class="text-[11px] font-bold text-slate-700">Analis Pria</span>
+                            </button>
+                            <button type="button" onclick="selectAvatarPreset('female')" class="preset-avatar-card p-3 rounded-2xl border-2 border-slate-200 hover:border-emerald-500 flex flex-col items-center gap-1.5 bg-white transition-all">
+                                <span class="text-2xl">👩‍🔬</span>
+                                <span class="text-[11px] font-bold text-slate-700">Analis Wanita</span>
+                            </button>
+                            <button type="button" onclick="selectAvatarPreset('medical')" class="preset-avatar-card p-3 rounded-2xl border-2 border-slate-200 hover:border-emerald-500 flex flex-col items-center gap-1.5 bg-white transition-all">
+                                <span class="text-2xl">🏥</span>
+                                <span class="text-[11px] font-bold text-slate-700">Ikon Medis</span>
+                            </button>
+                            <button type="button" onclick="selectAvatarPreset('initials')" class="preset-avatar-card p-3 rounded-2xl border-2 border-slate-200 hover:border-emerald-500 flex flex-col items-center gap-1.5 bg-white transition-all">
+                                <div id="avatarInitialsPreview" class="w-8 h-8 rounded-full bg-sky-600 text-white font-black text-xs flex items-center justify-center">
+                                    PL
+                                </div>
+                                <span class="text-[11px] font-bold text-slate-700">Inisial Nama</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Upload Custom Profile Photo -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Unggah Foto Profil Sendiri (PNG / JPG)</label>
+                        <div class="border-2 border-dashed border-emerald-200 hover:border-emerald-400 bg-emerald-50/20 rounded-2xl p-3.5 text-center transition-all cursor-pointer relative">
+                            <input type="file" id="profileFileInput" accept="image/*" onchange="handleProfileFileUpload(event)" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                            <div class="flex flex-col items-center gap-1 pointer-events-none">
+                                <span class="text-xl">📷</span>
+                                <p class="text-xs font-bold text-emerald-800">Pilih Foto Diri Anda</p>
+                                <p class="text-[10px] text-slate-400">Crop melingkar presisi dengan auto-compress</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Text Input Fields -->
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nama Petugas Lab</label>
+                            <input type="text" id="inputOfficerName" oninput="updateProfileLiveText()" placeholder="Contoh: Petugas Lab / Dr. Sarah Croft" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Subjudul / Status Shift</label>
+                            <input type="text" id="inputOfficerSub" oninput="updateProfileLiveText()" placeholder="Contoh: Semangat memberikan pelayanan terbaik ✨" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nama Aplikasi / Instansi</label>
+                            <input type="text" id="inputAppName" oninput="updateProfileLiveText()" placeholder="Contoh: SAMPELKU" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer Controls -->
+            <div class="bg-slate-50 border-t border-slate-100 p-4 px-6 flex items-center justify-end gap-3 shrink-0">
+                <button type="button" onclick="closeCustomizationModal()" class="px-5 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-200 rounded-xl transition-colors">
+                    Batal
+                </button>
+                <button type="button" onclick="saveCustomizationSettings()" class="px-6 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2">
+                    💾 Simpan Perubahan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL 2: DETAIL SAMPEL & LABELS ================= -->
+    <div id="detailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden border border-sky-100">
+            <div class="bg-sky-600 text-white p-5 flex items-center justify-between">
+                <div>
+                    <h3 class="font-extrabold text-lg">Detail Sampel & Stiker Barcode</h3>
+                    <p class="text-xs text-sky-100 mt-0.5">Informasi spesifik pengujian laboratorium</p>
+                </div>
+                <button onclick="closeDetailModal()" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white">✕</button>
+            </div>
+
+            <div class="p-6 space-y-5" id="detailModalBody">
+                <!-- Rendered dynamically -->
+            </div>
+
+            <div class="bg-slate-50 p-4 border-t border-slate-100 flex items-center justify-between">
+                <button onclick="printStickerLabel()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl flex items-center gap-2 shadow">
+                    🖨️ Cetak Stiker Tabung
+                </button>
+                <button onclick="closeDetailModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-xl">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HIDDEN STICKER PRINT CONTAINER -->
+    <div id="printableSticker" class="hidden p-6 bg-white border border-slate-300 text-slate-900 max-w-xs font-sans">
+        <!-- Rendered dynamically for physical printing -->
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        /* -------------------------------------------------------------
+         * 1. INITIAL DEMO DATA & BRANDING CONFIGURATION
+         * ------------------------------------------------------------- */
+        const DEFAULT_BRANDING = {
+            appName: "SAMPELKU",
+            logoType: "preset", // "preset" or "custom"
+            presetId: "preset1",
+            customLogoBase64: null,
+            logoScale: "besar", // "sedang", "besar", "ekstra"
+            
+            officerName: "Petugas Lab",
+            officerSub: "Semangat memberikan pelayanan terbaik ✨",
+            avatarType: "male", // "male", "female", "medical", "initials", "custom"
+            customAvatarBase64: null
+        };
+
+        const INITIAL_SAMPLES = [
+            // Group 1: Suminah Karsih
+            { id: 1, kode: "SMP-001", namaPasien: "Suminah Karsih", pemeriksaan: "Hematologi Lengkap", jenisSampel: "Darah", status: "Dalam Antrean", waktuTerima: "08:15", waktuSelesai: "08:20" },
+            { id: 2, kode: "SMP-002", namaPasien: "Suminah Karsih", pemeriksaan: "Glukosa", jenisSampel: "Darah", status: "Proses Pengerjaan", waktuTerima: "08:27", waktuSelesai: "09:05" },
+            
+            // Group 2: Parto Sasmita
+            { id: 3, kode: "SMP-003", namaPasien: "Parto Sasmita", pemeriksaan: "Kolesterol Total", jenisSampel: "Darah", status: "Selesai", waktuTerima: "08:42", waktuSelesai: "10:20" },
+            { id: 4, kode: "SMP-004", namaPasien: "Parto Sasmita", pemeriksaan: "Urine Lengkap", jenisSampel: "Urine", status: "Proses Pengerjaan", waktuTerima: "09:10", waktuSelesai: "09:35" },
+            
+            // Group 3: Darsa Wibisana
+            { id: 5, kode: "SMP-005", namaPasien: "Darsa Wibisana", pemeriksaan: "SGOT/SGPT", jenisSampel: "Darah", status: "Dalam Antrean", waktuTerima: "09:23", waktuSelesai: "09:28" },
+            { id: 6, kode: "SMP-006", namaPasien: "Darsa Wibisana", pemeriksaan: "Kreatinin", jenisSampel: "Darah", status: "Selesai", waktuTerima: "09:37", waktuSelesai: "09:40" },
+            
+            // Group 4: Rukayah Marjuki
+            { id: 7, kode: "SMP-007", namaPasien: "Rukayah Marjuki", pemeriksaan: "HIV Rapid Test", jenisSampel: "Darah", status: "Selesai", waktuTerima: "09:52", waktuSelesai: "10:18" },
+            { id: 8, kode: "SMP-008", namaPasien: "Rukayah Marjuki", pemeriksaan: "Asam Urat", jenisSampel: "Darah", status: "Dalam Antrean", waktuTerima: "10:05", waktuSelesai: "10:07" },
+            
+            // Group 5: Waginah Surtini
+            { id: 9, kode: "SMP-009", namaPasien: "Waginah Surtini", pemeriksaan: "Profil Lipid", jenisSampel: "Darah", status: "Selesai", waktuTerima: "10:18", waktuSelesai: "10:17" },
+            { id: 10, kode: "SMP-010", namaPasien: "Waginah Surtini", pemeriksaan: "Tinja Lengkap", jenisSampel: "Tinja", status: "Proses Pengerjaan", waktuTerima: "10:21", waktuSelesai: "10:23" }
+        ];
+
+        // State storage Variables
+        let brandingConfig = JSON.parse(localStorage.getItem('sampelku_branding_v1')) || { ...DEFAULT_BRANDING };
+        let tempBranding = JSON.parse(JSON.stringify(brandingConfig)); // Working copy for modal
+        let samples = JSON.parse(localStorage.getItem('sampelku_samples_v2')) || [ ...INITIAL_SAMPLES ];
+        let activeTab = 'dashboard';
+        let currentDetailSample = null;
+
+        /* -------------------------------------------------------------
+         * 2. WITA LIVE CLOCK
+         * ------------------------------------------------------------- */
+        function updateWITAClock() {
+            const now = new Date();
+            // Format to Asia/Makassar (WITA)
+            const options = {
+                timeZone: 'Asia/Makassar',
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            };
+            try {
+                const dateStr = new Intl.DateTimeFormat('id-ID', options).format(now);
+                document.getElementById('witaClockDisplay').innerText = dateStr.replace('.', ':') + ' WITA';
+            } catch(e) {
+                document.getElementById('witaClockDisplay').innerText = now.toLocaleTimeString() + ' WITA';
+            }
+        }
+        setInterval(updateWITAClock, 1000);
+        updateWITAClock();
+
+        /* -------------------------------------------------------------
+         * 3. PRESET MEDICAL SVG GENERATORS
+         * ------------------------------------------------------------- */
+        function getPresetSVG(presetId, sizeClass = "w-9 h-9") {
+            switch(presetId) {
+                case 'preset1': // Default Erlenmeyer + QR Code Glass
+                    return `<svg class="${sizeClass} text-sky-600 drop-shadow-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L5.605 15.13a1 1 0 00-1.16.576l-1.4 3.5a1 1 0 00.928 1.37h16.054a1 1 0 00.928-1.37l-1.527-3.778zM12 3v9"/>
+                    </svg>`;
+                case 'preset2': // Mikroskop Lab
+                    return `<svg class="${sizeClass} text-emerald-600 drop-shadow-sm" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 19a1 1 0 01-1 1H6a1 1 0 010-2h12a1 1 0 011 1zm-7-4a4 4 0 004-4v-1h-1a1 1 0 010-2h1V7a5 5 0 00-10 0v1h1a1 1 0 010 2H7v1a4 4 0 004 4zm-1-6h2v3h-2V9z"/>
+                    </svg>`;
+                case 'preset3': // Tabung Darah
+                    return `<svg class="${sizeClass} text-rose-600 drop-shadow-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L5.605 15.13a1 1 0 00-1.16.576l-1.4 3.5a1 1 0 00.928 1.37h16.054a1 1 0 00.928-1.37l-1.527-3.778z"/>
+                    </svg>`;
+                case 'preset4': // Palang Medis
+                    return `<svg class="${sizeClass} text-indigo-600 drop-shadow-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+                    </svg>`;
+                default:
+                    return getPresetSVG('preset1', sizeClass);
+            }
+        }
+
+        /* -------------------------------------------------------------
+         * 4. BRANDING & PROFILE RENDER ENGINES
+         * ------------------------------------------------------------- */
+        function applyBrandingUI() {
+            // 1. Sidebar Logo & App Name
+            const sidebarLogoContainer = document.getElementById('sidebarLogoContainer');
+            const sidebarAppName = document.getElementById('sidebarAppName');
+            sidebarAppName.innerText = brandingConfig.appName || "SAMPELKU";
+
+            // Logo size class
+            let scaleClass = "h-9 w-9";
+            if (brandingConfig.logoScale === 'sedang') scaleClass = "h-7 w-7";
+            if (brandingConfig.logoScale === 'ekstra') scaleClass = "h-11 w-11";
+
+            if (brandingConfig.logoType === 'custom' && brandingConfig.customLogoBase64) {
+                sidebarLogoContainer.innerHTML = `<img src="${brandingConfig.customLogoBase64}" alt="Logo Lab" class="${scaleClass} object-contain rounded-lg">`;
+            } else {
+                sidebarLogoContainer.innerHTML = getPresetSVG(brandingConfig.presetId, scaleClass);
+            }
+
+            // 2. Header Officer Info & Photo Avatar
+            document.getElementById('headerOfficerName').innerText = brandingConfig.officerName || "Petugas Lab";
+            document.getElementById('headerOfficerSub').innerText = brandingConfig.officerSub || "Semangat memberikan pelayanan terbaik ✨";
+            
+            const headerProfileAvatar = document.getElementById('headerProfileAvatar');
+            headerProfileAvatar.innerHTML = renderAvatarHTML(brandingConfig, "w-9 h-9 text-base");
+
+            // Save to localStorage
+            localStorage.setItem('sampelku_branding_v1', JSON.stringify(brandingConfig));
+        }
+
+        function renderAvatarHTML(config, sizeClasses = "w-9 h-9 text-base") {
+            if (config.avatarType === 'custom' && config.customAvatarBase64) {
+                return `<img src="${config.customAvatarBase64}" alt="Foto Profil" class="${sizeClasses.split(' ')[0]} ${sizeClasses.split(' ')[1]} rounded-full object-cover border-2 border-emerald-400 shadow-xs">`;
+            } else if (config.avatarType === 'female') {
+                return `<div class="${sizeClasses.split(' ')[0]} ${sizeClasses.split(' ')[1]} rounded-full bg-emerald-100 flex items-center justify-center border-2 border-emerald-300 shadow-xs">👩‍🔬</div>`;
+            } else if (config.avatarType === 'medical') {
+                return `<div class="${sizeClasses.split(' ')[0]} ${sizeClasses.split(' ')[1]} rounded-full bg-sky-100 flex items-center justify-center border-2 border-sky-300 shadow-xs">🏥</div>`;
+            } else if (config.avatarType === 'initials') {
+                const initials = (config.officerName || "Petugas Lab").split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                return `<div class="${sizeClasses.split(' ')[0]} ${sizeClasses.split(' ')[1]} rounded-full bg-sky-600 text-white font-extrabold flex items-center justify-center border-2 border-white shadow-xs">${initials}</div>`;
+            } else {
+                // Default male
+                return `<div class="${sizeClasses.split(' ')[0]} ${sizeClasses.split(' ')[1]} rounded-full bg-emerald-100 flex items-center justify-center border-2 border-emerald-300 shadow-xs">👨‍🔬</div>`;
+            }
+        }
+
+        /* -------------------------------------------------------------
+         * 5. MODAL & CUSTOMIZATION CONTROLS
+         * ------------------------------------------------------------- */
+        function openCustomizationModal(targetTab = 'logo') {
+            tempBranding = JSON.parse(JSON.stringify(brandingConfig));
+            document.getElementById('customizationModal').classList.remove('hidden');
+            switchModalTab(targetTab);
+            syncModalFormInputs();
+            renderModalPreviews();
+        }
+
+        function closeCustomizationModal() {
+            document.getElementById('customizationModal').classList.add('hidden');
+        }
+
+        function switchModalTab(tabName) {
+            const btnLogo = document.getElementById('modalTabBtnLogo');
+            const btnProfil = document.getElementById('modalTabBtnProfil');
+            const contentLogo = document.getElementById('modalTabContentLogo');
+            const contentProfil = document.getElementById('modalTabContentProfil');
+
+            if (tabName === 'logo') {
+                btnLogo.className = "px-4 py-2.5 font-bold text-xs rounded-t-xl transition-all border-b-2 border-sky-600 text-sky-700 bg-white";
+                btnProfil.className = "px-4 py-2.5 font-semibold text-xs rounded-t-xl transition-all border-b-2 border-transparent text-slate-500 hover:text-slate-800";
+                contentLogo.classList.remove('hidden');
+                contentProfil.classList.add('hidden');
+            } else {
+                btnProfil.className = "px-4 py-2.5 font-bold text-xs rounded-t-xl transition-all border-b-2 border-emerald-600 text-emerald-700 bg-white";
+                btnLogo.className = "px-4 py-2.5 font-semibold text-xs rounded-t-xl transition-all border-b-2 border-transparent text-slate-500 hover:text-slate-800";
+                contentProfil.classList.remove('hidden');
+                contentLogo.classList.add('hidden');
+            }
+        }
+
+        function syncModalFormInputs() {
+            document.getElementById('inputOfficerName').value = tempBranding.officerName;
+            document.getElementById('inputOfficerSub').value = tempBranding.officerSub;
+            document.getElementById('inputAppName').value = tempBranding.appName;
+
+            const scaleRadios = document.getElementsByName('logoScale');
+            scaleRadios.forEach(r => {
+                if (r.value === tempBranding.logoScale) r.checked = true;
+            });
+
+            // Update initials preview badge
+            const initials = (tempBranding.officerName || "PL").split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            document.getElementById('avatarInitialsPreview').innerText = initials;
+        }
+
+        function renderModalPreviews() {
+            // 1. Logo Preview
+            const logoPreviewContainer = document.getElementById('logoPreviewContainer');
+            document.getElementById('logoPreviewName').innerText = tempBranding.appName || "SAMPELKU";
+
+            if (tempBranding.logoType === 'custom' && tempBranding.customLogoBase64) {
+                logoPreviewContainer.innerHTML = `<img src="${tempBranding.customLogoBase64}" class="h-10 w-10 object-contain">`;
+            } else {
+                logoPreviewContainer.innerHTML = getPresetSVG(tempBranding.presetId, "w-10 h-10");
+            }
+
+            // 2. Profile Preview
+            document.getElementById('profilePreviewName').innerText = tempBranding.officerName || "Petugas Lab";
+            document.getElementById('profilePreviewSub').innerText = tempBranding.officerSub || "Semangat memberikan pelayanan terbaik ✨";
+            document.getElementById('profilePreviewAvatar').innerHTML = renderAvatarHTML(tempBranding, "w-12 h-12 text-xl");
+        }
+
+        function selectPresetLogo(presetId) {
+            tempBranding.logoType = 'preset';
+            tempBranding.presetId = presetId;
+            renderModalPreviews();
+            showToast("Preset logo dipilih", "info");
+        }
+
+        function resetToDefaultLogo() {
+            tempBranding.logoType = 'preset';
+            tempBranding.presetId = 'preset1';
+            tempBranding.logoScale = 'besar';
+            syncModalFormInputs();
+            renderModalPreviews();
+            showToast("Logo dikembalikan ke default", "info");
+        }
+
+        function updateLogoScale(scale) {
+            tempBranding.logoScale = scale;
+            renderModalPreviews();
+        }
+
+        function selectAvatarPreset(type) {
+            tempBranding.avatarType = type;
+            renderModalPreviews();
+            showToast("Avatar preset dipilih", "info");
+        }
+
+        function updateProfileLiveText() {
+            tempBranding.officerName = document.getElementById('inputOfficerName').value || "Petugas Lab";
+            tempBranding.officerSub = document.getElementById('inputOfficerSub').value || "Semangat memberikan pelayanan terbaik ✨";
+            tempBranding.appName = document.getElementById('inputAppName').value || "SAMPELKU";
+            
+            // Sync initials preview
+            const initials = tempBranding.officerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            document.getElementById('avatarInitialsPreview').innerText = initials;
+
+            renderModalPreviews();
+        }
+
+        /* -------------------------------------------------------------
+         * CANVAS AUTO-RESIZE & FILE UPLOADS FOR LOCALSTORAGE SAFETY
+         * ------------------------------------------------------------- */
+        function handleLogoFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                resizeImage(e.target.result, 300, 300, (resizedBase64) => {
+                    tempBranding.logoType = 'custom';
+                    tempBranding.customLogoBase64 = resizedBase64;
+                    renderModalPreviews();
+                    showToast("Logo berhasil diunggah!", "success");
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleProfileFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                resizeImage(e.target.result, 250, 250, (resizedBase64) => {
+                    tempBranding.avatarType = 'custom';
+                    tempBranding.customAvatarBase64 = resizedBase64;
+                    renderModalPreviews();
+                    showToast("Foto profil berhasil diunggah!", "success");
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resizeImage(dataUrl, maxW, maxH, callback) {
+            const img = new Image();
+            img.onload = function() {
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > maxW) {
+                        height *= maxW / width;
+                        width = maxW;
+                    }
+                } else {
+                    if (height > maxH) {
+                        width *= maxH / height;
+                        height = maxH;
+                    }
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                callback(canvas.toDataURL('image/png', 0.85));
+            };
+            img.src = dataUrl;
+        }
+
+        function saveCustomizationSettings() {
+            tempBranding.officerName = document.getElementById('inputOfficerName').value.trim() || "Petugas Lab";
+            tempBranding.officerSub = document.getElementById('inputOfficerSub').value.trim() || "Semangat memberikan pelayanan terbaik ✨";
+            tempBranding.appName = document.getElementById('inputAppName').value.trim() || "SAMPELKU";
+
+            brandingConfig = JSON.parse(JSON.stringify(tempBranding));
+            applyBrandingUI();
+            closeCustomizationModal();
+            showToast("Profil & logo berhasil diperbarui!", "success");
+        }
+
+        /* -------------------------------------------------------------
+         * 6. NAVIGATION & TAB SWITCHING
+         * ------------------------------------------------------------- */
+        function switchTab(tabId) {
+            activeTab = tabId;
+            const views = ['dashboard', 'input', 'kanban', 'laporan', 'pengaturan'];
+            const titles = {
+                dashboard: 'Dashboard Monitoring Sampel',
+                input: 'Input Sampel Lab Baru',
+                kanban: 'Papan Ubah Status Pengerjaan',
+                laporan: 'Laporan Rekapitulasi Laboratory',
+                pengaturan: 'Pengaturan & Kustomisasi Branding'
+            };
+
+            document.getElementById('pageTitle').innerText = titles[tabId] || 'SAMPELKU';
+
+            views.forEach(v => {
+                const viewEl = document.getElementById(`view-${v}`);
+                const navBtn = document.getElementById(`nav-${v}`);
+
+                if (v === tabId) {
+                    viewEl.classList.remove('hidden');
+                    if (navBtn) {
+                        navBtn.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all text-sky-700 bg-sky-50 shadow-sm border border-sky-100";
+                    }
+                } else {
+                    viewEl.classList.add('hidden');
+                    if (navBtn) {
+                        navBtn.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-600 hover:bg-sky-50/70 hover:text-sky-700 transition-all";
+                    }
+                }
+            });
+
+            if (tabId === 'dashboard') renderDashboard();
+            if (tabId === 'kanban') renderKanban();
+            if (tabId === 'laporan') renderLaporan();
+        }
+
+        /* -------------------------------------------------------------
+         * 7. DASHBOARD & PATIENT GROUPED TABLE RENDER (ROWSPAN LOGIC)
+         * ------------------------------------------------------------- */
+        function saveSamples() {
+            localStorage.setItem('sampelku_samples_v2', JSON.stringify(samples));
+            updateStats();
+        }
+
+        function updateStats() {
+            const antrean = samples.filter(s => s.status === 'Dalam Antrean').length;
+            const proses = samples.filter(s => s.status === 'Proses Pengerjaan').length;
+            const selesai = samples.filter(s => s.status === 'Selesai').length;
+
+            document.getElementById('statAntreanCount').innerText = antrean;
+            document.getElementById('statProsesCount').innerText = proses;
+            document.getElementById('statSelesaiCount').innerText = selesai;
+
+            // Render Latest 3 Completed
+            const completedItems = samples.filter(s => s.status === 'Selesai').slice(-3).reverse();
+            const latestContainer = document.getElementById('latestCompletedContainer');
+            if (completedItems.length === 0) {
+                latestContainer.innerHTML = `<p class="text-xs text-slate-400 italic">Belum ada sampel selesai</p>`;
+            } else {
+                latestContainer.innerHTML = completedItems.map(item => `
+                    <div class="flex items-center justify-between text-xs p-1.5 rounded-lg bg-emerald-50/50 border border-emerald-100">
+                        <span class="font-bold text-slate-800">${item.namaPasien.split(' ')[0]} (${item.kode})</span>
+                        <span class="text-emerald-700 font-medium">${item.pemeriksaan}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function renderDashboard() {
+            updateStats();
+            renderTable();
+            updatePatientDatalist();
+        }
+
+        function renderTable() {
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const jenisFilter = document.getElementById('jenisFilter').value;
+
+            // Filter samples
+            const filtered = samples.filter(s => {
+                const matchSearch = s.namaPasien.toLowerCase().includes(searchQuery) ||
+                                    s.kode.toLowerCase().includes(searchQuery) ||
+                                    s.pemeriksaan.toLowerCase().includes(searchQuery);
+                const matchStatus = statusFilter === 'Semua' || s.status === statusFilter;
+                const matchJenis = jenisFilter === 'Semua' || s.jenisSampel === jenisFilter;
+                return matchSearch && matchStatus && matchJenis;
+            });
+
+            const tbody = document.getElementById('sampleTableBody');
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="p-8 text-center text-slate-400 font-medium text-xs">Tidak ada data sampel yang cocok dengan filter.</td></tr>`;
+                return;
+            }
+
+            // Grouping samples by patient name
+            const groupedMap = new Map();
+            filtered.forEach(s => {
+                if (!groupedMap.has(s.namaPasien)) {
+                    groupedMap.set(s.namaPasien, []);
+                }
+                groupedMap.get(s.namaPasien).push(s);
+            });
+
+            let html = '';
+            let patientIndex = 1;
+
+            groupedMap.forEach((patientSamples, patientName) => {
+                const rowSpan = patientSamples.length;
+
+                patientSamples.forEach((item, index) => {
+                    html += `<tr class="hover:bg-sky-50/40 transition-colors">`;
+
+                    // Merge No. & Nama Pasien columns on first row of group
+                    if (index === 0) {
+                        html += `
+                            <td rowspan="${rowSpan}" class="py-3.5 px-4 text-center font-bold text-slate-400 align-top border-r border-slate-100 bg-slate-50/30">${patientIndex}</td>
+                            <td rowspan="${rowSpan}" class="py-3.5 px-4 font-extrabold text-slate-800 align-top border-r border-slate-100 bg-white">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-7 h-7 rounded-full bg-sky-100 text-sky-700 font-bold text-xs flex items-center justify-center">
+                                        ${patientName.charAt(0)}
+                                    </div>
+                                    <span>${patientName}</span>
+                                </div>
+                            </td>
+                        `;
+                    }
+
+                    // Individual Sample Columns
+                    html += `
+                        <td class="py-3.5 px-4 font-mono font-bold text-sky-700 text-xs">${item.kode}</td>
+                        <td class="py-3.5 px-4 font-semibold text-slate-700">${item.pemeriksaan}</td>
+                        <td class="py-3.5 px-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
+                                ${item.jenisSampel}
+                            </span>
+                        </td>
+                        <td class="py-3.5 px-4 text-center">
+                            <!-- Inline Editable Dropdown Selector for Status -->
+                            <select onchange="updateSampleStatus(${item.id}, this.value)" class="text-xs font-bold px-3 py-1 rounded-full border cursor-pointer focus:outline-none transition-all ${getStatusBadgeClass(item.status)}">
+                                <option value="Dalam Antrean" ${item.status === 'Dalam Antrean' ? 'selected' : ''}>⏳ Dalam Antrean</option>
+                                <option value="Proses Pengerjaan" ${item.status === 'Proses Pengerjaan' ? 'selected' : ''}>🔬 Proses Pengerjaan</option>
+                                <option value="Selesai" ${item.status === 'Selesai' ? 'selected' : ''}>✅ Selesai</option>
+                            </select>
+                        </td>
+                        <td class="py-3.5 px-4 text-xs font-mono text-slate-500">${item.waktuTerima} WITA</td>
+                        <td class="py-3.5 px-4 text-xs font-mono text-slate-500">${item.status === 'Selesai' ? item.waktuSelesai + ' WITA' : '-'}</td>
+                        <td class="py-3.5 px-4 text-center">
+                            <button onclick="openDetailModal(${item.id})" class="px-3 py-1 bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 text-xs font-bold rounded-lg transition-colors">
+                                Lihat Detail
+                            </button>
+                        </td>
+                    </tr>`;
+                });
+
+                patientIndex++;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        function getStatusBadgeClass(status) {
+            if (status === 'Dalam Antrean') return 'bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200';
+            if (status === 'Proses Pengerjaan') return 'bg-sky-100 text-sky-800 border-sky-300 hover:bg-sky-200';
+            if (status === 'Selesai') return 'bg-emerald-100 text-emerald-800 border-emerald-300 hover:bg-emerald-200';
+            return 'bg-slate-100 text-slate-800';
+        }
+
+        function updateSampleStatus(id, newStatus) {
+            const sample = samples.find(s => s.id === id);
+            if (sample) {
+                sample.status = newStatus;
+                if (newStatus === 'Selesai' && sample.waktuSelesai === '-') {
+                    const now = new Date();
+                    sample.waktuSelesai = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+                }
+                saveSamples();
+                if (activeTab === 'dashboard') renderDashboard();
+                if (activeTab === 'kanban') renderKanban();
+                showToast(`Status ${sample.kode} diubah ke '${newStatus}'`, "success");
+            }
+        }
+
+        function setFilterStatus(status) {
+            switchTab('dashboard');
+            document.getElementById('statusFilter').value = status;
+            renderTable();
+        }
+
+        /* -------------------------------------------------------------
+         * 8. FORM INPUT & AUTOCOMPLETE
+         * ------------------------------------------------------------- */
+        function updatePatientDatalist() {
+            const list = document.getElementById('patientSuggestions');
+            const uniquePatients = [...new Set(samples.map(s => s.namaPasien))];
+            list.innerHTML = uniquePatients.map(p => `<option value="${p}">`).join('');
+        }
+
+        function setQuickExam(exam, sampleType) {
+            document.getElementById('formJenisPemeriksaan').value = exam;
+            document.getElementById('formJenisSampel').value = sampleType;
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const namaPasien = document.getElementById('formNamaPasien').value.trim();
+            const jenisSampel = document.getElementById('formJenisSampel').value;
+            const pemeriksaan = document.getElementById('formJenisPemeriksaan').value.trim();
+            const status = document.getElementById('formStatus').value;
+
+            if (!namaPasien || !pemeriksaan) return;
+
+            const now = new Date();
+            const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            const nextNum = samples.length + 1;
+            const kode = `SMP-${String(nextNum).padStart(3, '0')}`;
+
+            const newSample = {
+                id: Date.now(),
+                kode,
+                namaPasien,
+                pemeriksaan,
+                jenisSampel,
+                status,
+                waktuTerima: timeStr,
+                waktuSelesai: status === 'Selesai' ? timeStr : '-'
+            };
+
+            samples.push(newSample);
+            saveSamples();
+
+            document.getElementById('addSampleForm').reset();
+            showToast(`Sampel baru ${kode} berhasil ditambahkan!`, "success");
+            switchTab('dashboard');
+        }
+
+        /* -------------------------------------------------------------
+         * 9. KANBAN BOARD RENDER
+         * ------------------------------------------------------------- */
+        function renderKanban() {
+            const cols = {
+                'Dalam Antrean': document.getElementById('kanbanColAntrean'),
+                'Proses Pengerjaan': document.getElementById('kanbanColProses'),
+                'Selesai': document.getElementById('kanbanColSelesai')
+            };
+
+            const counts = { 'Dalam Antrean': 0, 'Proses Pengerjaan': 0, 'Selesai': 0 };
+
+            Object.keys(cols).forEach(k => cols[k].innerHTML = '');
+
+            samples.forEach(s => {
+                counts[s.status] = (counts[s.status] || 0) + 1;
+
+                let actionButtons = '';
+                if (s.status === 'Dalam Antrean') {
+                    actionButtons = `<button onclick="updateSampleStatus(${s.id}, 'Proses Pengerjaan')" class="w-full py-1.5 bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold rounded-lg transition-colors">Proses ➡️</button>`;
+                } else if (s.status === 'Proses Pengerjaan') {
+                    actionButtons = `
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="updateSampleStatus(${s.id}, 'Dalam Antrean')" class="py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-lg">⬅️ Kembalikan</button>
+                            <button onclick="updateSampleStatus(${s.id}, 'Selesai')" class="py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg">Selesai ✅</button>
+                        </div>
+                    `;
+                } else {
+                    actionButtons = `<button onclick="updateSampleStatus(${s.id}, 'Proses Pengerjaan')" class="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg">Ulangi Analisis 🔄</button>`;
+                }
+
+                const cardHTML = `
+                    <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono font-bold text-xs text-sky-700">${s.kode}</span>
+                            <span class="text-[10px] text-slate-400 font-mono">${s.waktuTerima} WITA</span>
+                        </div>
+                        <h5 class="font-bold text-sm text-slate-800">${s.namaPasien}</h5>
+                        <p class="text-xs text-slate-600 font-medium">${s.pemeriksaan} (${s.jenisSampel})</p>
+                        <div class="pt-2 border-t border-slate-100">
+                            ${actionButtons}
+                        </div>
+                    </div>
+                `;
+
+                if (cols[s.status]) cols[s.status].innerHTML += cardHTML;
+            });
+
+            document.getElementById('kanbanCountAntrean').innerText = counts['Dalam Antrean'] || 0;
+            document.getElementById('kanbanCountProses').innerText = counts['Proses Pengerjaan'] || 0;
+            document.getElementById('kanbanCountSelesai').innerText = counts['Selesai'] || 0;
+        }
+
+        /* -------------------------------------------------------------
+         * 10. LAPORAN & CSV EXPORT
+         * ------------------------------------------------------------- */
+        function renderLaporan() {
+            document.getElementById('reportTotalSamples').innerText = samples.length;
+            const finished = samples.filter(s => s.status === 'Selesai').length;
+            const rate = samples.length > 0 ? Math.round((finished / samples.length) * 100) : 0;
+            document.getElementById('reportCompletionRate').innerText = `${rate}%`;
+
+            const tbody = document.getElementById('reportTableBody');
+            tbody.innerHTML = samples.map(s => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3 font-mono font-bold text-sky-700">${s.kode}</td>
+                    <td class="p-3 font-bold text-slate-800">${s.namaPasien}</td>
+                    <td class="p-3">${s.pemeriksaan}</td>
+                    <td class="p-3">${s.jenisSampel}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${getStatusBadgeClass(s.status)}">${s.status}</span></td>
+                    <td class="p-3 font-mono">${s.waktuTerima} WITA</td>
+                    <td class="p-3 font-mono">${s.waktuSelesai} WITA</td>
+                </tr>
+            `).join('');
+        }
+
+        function exportToCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // BOM UTF-8 for Excel
+            csvContent += "ID,Kode Sampel,Nama Pasien,Jenis Pemeriksaan,Jenis Sampel,Status,Waktu Terima (WITA),Waktu Selesai (WITA)\n";
+
+            samples.forEach(s => {
+                const row = [
+                    s.id,
+                    `"${s.kode}"`,
+                    `"${s.namaPasien}"`,
+                    `"${s.pemeriksaan}"`,
+                    `"${s.jenisSampel}"`,
+                    `"${s.status}"`,
+                    `"${s.waktuTerima}"`,
+                    `"${s.waktuSelesai}"`
+                ].join(",");
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Laporan_SAMPELKU_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("File CSV laporan berhasil diunduh!", "success");
+        }
+
+        /* -------------------------------------------------------------
+         * 11. DETAIL & PRINT STICKER MODAL
+         * ------------------------------------------------------------- */
+        function openDetailModal(id) {
+            currentDetailSample = samples.find(s => s.id === id);
+            if (!currentDetailSample) return;
+
+            const modalBody = document.getElementById('detailModalBody');
+            const qrSVG = generateSimpleQR(currentDetailSample.kode);
+
+            modalBody.innerHTML = `
+                <div class="p-4 bg-sky-50 rounded-2xl border border-sky-100 flex items-center justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold text-sky-600 uppercase">Kode Laboratorium</span>
+                        <h4 class="text-2xl font-black text-sky-800 font-mono">${currentDetailSample.kode}</h4>
+                    </div>
+                    <div class="bg-white p-2 rounded-xl shadow-xs border border-sky-100">
+                        ${qrSVG}
+                    </div>
+                </div>
+
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between py-1.5 border-b border-slate-100">
+                        <span class="text-slate-500 font-medium">Nama Pasien:</span>
+                        <span class="font-bold text-slate-800">${currentDetailSample.namaPasien}</span>
+                    </div>
+                    <div class="flex justify-between py-1.5 border-b border-slate-100">
+                        <span class="text-slate-500 font-medium">Jenis Pemeriksaan:</span>
+                        <span class="font-bold text-slate-800">${currentDetailSample.pemeriksaan}</span>
+                    </div>
+                    <div class="flex justify-between py-1.5 border-b border-slate-100">
+                        <span class="text-slate-500 font-medium">Wadah / Jenis Sampel:</span>
+                        <span class="font-bold text-slate-800">${currentDetailSample.jenisSampel}</span>
+                    </div>
+                    <div class="flex justify-between py-1.5 border-b border-slate-100">
+                        <span class="text-slate-500 font-medium">Status Pengerjaan:</span>
+                        <span class="font-bold ${getStatusBadgeClass(currentDetailSample.status)} px-2.5 py-0.5 rounded-full text-xs">${currentDetailSample.status}</span>
+                    </div>
+                    <div class="flex justify-between py-1.5">
+                        <span class="text-slate-500 font-medium">Waktu Registrasi:</span>
+                        <span class="font-mono text-slate-700">${currentDetailSample.waktuTerima} WITA</span>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        function printStickerLabel() {
+            if (!currentDetailSample) return;
+            const printable = document.getElementById('printableSticker');
+            printable.innerHTML = `
+                <div style="border: 2px solid #000; padding: 10px; border-radius: 8px; width: 220px; font-family: sans-serif;">
+                    <div style="font-size: 10px; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 3px; margin-bottom: 5px;">
+                        ${brandingConfig.appName || 'SAMPELKU'} LAB KLINIK
+                    </div>
+                    <div style="font-size: 16px; font-weight: bold; font-family: monospace;">${currentDetailSample.kode}</div>
+                    <div style="font-size: 12px; font-weight: bold; margin-top: 2px;">${currentDetailSample.namaPasien}</div>
+                    <div style="font-size: 10px; color: #333;">${currentDetailSample.pemeriksaan} (${currentDetailSample.jenisSampel})</div>
+                    <div style="font-size: 9px; margin-top: 4px;">Terima: ${currentDetailSample.waktuTerima} WITA</div>
+                </div>
+            `;
+            window.print();
+        }
+
+        function generateSimpleQR(code) {
+            // Crisp SVG QR representation mockup
+            return `
+                <svg class="w-14 h-14" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M2,2H10V10H2V2M4,4V8H8V4H4M14,2H22V10H14V2M16,4V8H20V4H16M2,14H10V22H2V14M4,16V20H8V16H4M14,14H16V16H14V14M18,14H20V16H18V14M20,16H22V18H20V16M14,18H16V20H14V18M18,18H20V20H18V18M16,20H18V22H16V20M20,20H22V22H20V20Z"/>
+                </svg>
+            `;
+        }
+
+        /* -------------------------------------------------------------
+         * 12. RESET DEMO DATA
+         * ------------------------------------------------------------- */
+        function resetDemoData() {
+            if (confirm("Apakah Anda yakin ingin mengembalikan sampel demo bawaan?")) {
+                samples = JSON.parse(JSON.stringify(INITIAL_SAMPLES));
+                saveSamples();
+                renderDashboard();
+                showToast("Data demo berhasil di-reset!", "success");
+            }
+        }
+
+        /* -------------------------------------------------------------
+         * 13. TOAST NOTIFICATION SYSTEM
+         * ------------------------------------------------------------- */
+        function showToast(message, type = "info") {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            let bgClass = "bg-slate-900 text-white";
+            if (type === 'success') bgClass = "bg-emerald-600 text-white";
+            if (type === 'warning') bgClass = "bg-amber-600 text-white";
+
+            toast.className = `px-4 py-3 rounded-2xl shadow-xl text-xs font-bold transition-all transform translate-y-4 opacity-0 flex items-center gap-2 ${bgClass}`;
+            toast.innerHTML = `<span>✨ ${message}</span>`;
+            
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        /* -------------------------------------------------------------
+         * 14. APPLICATION INITIALIZATION
+         * ------------------------------------------------------------- */
+        window.onload = function() {
+            applyBrandingUI();
+            renderDashboard();
+        };
+    </script>
+</body>
+</html>
